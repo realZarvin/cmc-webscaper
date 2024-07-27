@@ -115,21 +115,37 @@ email_list = pd.read_csv('emails.csv')
 
 
 # Email;
-subject = "Opportunity to List Your Project on Our CEX"
+subject = "Invitation to List Your Project on Our Leading CEX"
+
 body_template = """
 Dear {recipient},
 
-We are reaching out to invite you to list your project on our Centralized Exchange (CEX). Our platform offers a range of benefits, including increased visibility and access to a large user base.
+I hope this message finds you well.
 
-If you are interested, please reply to this email, and we will provide you with more details on how to proceed.
+My name is Zarvin, and I am a Community Manager at BitMart. I am writing to extend a special invitation for you to list your project on our Centralized Exchange (CEX).
+
+At Bitmart, we are committed to providing a premier trading platform that offers extensive benefits to our listed projects, including:
+- Increased Visibility: Gain exposure to a global audience of enthusiastic traders and investors.
+- Robust Security: Our state-of-the-art security measures ensure the safety and integrity of your assets.
+- Liquidity Support: Access deep liquidity pools to facilitate seamless trading experiences for your users.
+- Dedicated Support: Benefit from our dedicated support team, ready to assist you at every step.
+
+We are confident that your project will thrive on our platform, reaching new heights and attracting a broader community of supporters. 
+
+If you are interested in exploring this opportunity, please reply to this email. I would be delighted to provide you with further details and assist you with the listing process.
+
+Thank you for considering our invitation. We look forward to the possibility of collaborating with you.
 
 Best regards,
-zarvin
+
+Zarvin
 Community Manager
+BitMart
 zarvinns@gmail.com
 """
 
-# Function to send email
+
+# Email Sender?
 def send_email(to_email, subject, body):
     msg = MIMEMultipart()
     msg['From'] = EMAIL
@@ -147,9 +163,37 @@ def send_email(to_email, subject, body):
     except Exception as e:
         print('Failed to send email to {}: {}'.format(to_email, e))
 
-# Send emails
+
+# Send emails_1
 for index, row in email_list.iterrows():
     recipient_email = row['email']
     body = body_template.format(recipient=recipient_email)
     send_email(recipient_email, subject, body)
+
+
+# Send emails_2
+def send_email(to_email, subject, body):
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL
+    msg['To'] = to_email
+    msg['Subject'] = subject
     
+    msg.attach(MIMEText(body, 'plain'))
+    
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(EMAIL, PASSWORD)
+            server.sendmail(EMAIL, to_email, msg.as_string())
+            print('Email sent to {}'.format(to_email))
+    except Exception as e:
+        print('Failed to send email to {}: {}'.format(to_email, e))
+
+
+# Send emails_3
+for index, row in email_list.iterrows():
+    recipient_email = row['email']
+    body = body_template.format(recipient=recipient_email)
+    send_email(recipient_email, subject, body)
+
+#End of Program!
