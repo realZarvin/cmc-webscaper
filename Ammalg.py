@@ -1,3 +1,6 @@
+#Accumulating Email List
+
+
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
@@ -86,9 +89,67 @@ for page in range(1, 11):
             print(f"An error occurred while processing {link}: {e}")
           
 
-# Saving information to a CSV file
+# Saving List of Emails as a CSV file
 df = pd.DataFrame(email_addresses, columns=['email'])
 df.to_csv('emails.csv', index=False)
 
+
 print(f'Collected {len(email_addresses)} email addresses.')
+#End of Accumulating List
+
+
+
+
           
+#Start of sending Emails
+
+
+SMTP_SERVER = 'smtp.gmail.com'#Email Configuration 
+SMTP_PORT = 587 
+EMAIL = 'midasscanner@gmail.com'  # Sending Email, Var?
+PASSWORD = 'Melo2006.'  # Password
+
+
+# Email list accumulated in Phase O
+email_list = pd.read_csv('emails.csv')
+
+
+# Email;
+subject = "Opportunity to List Your Project on Our CEX"
+body_template = """
+Dear {recipient},
+
+We are reaching out to invite you to list your project on our Centralized Exchange (CEX). Our platform offers a range of benefits, including increased visibility and access to a large user base.
+
+If you are interested, please reply to this email, and we will provide you with more details on how to proceed.
+
+Best regards,
+zarvin
+Community Manager
+zarvinns@gmail.com
+"""
+
+# Function to send email
+def send_email(to_email, subject, body):
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    
+    msg.attach(MIMEText(body, 'plain'))
+    
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(EMAIL, PASSWORD)
+            server.sendmail(EMAIL, to_email, msg.as_string())
+            print('Email sent to {}'.format(to_email))
+    except Exception as e:
+        print('Failed to send email to {}: {}'.format(to_email, e))
+
+# Send emails
+for index, row in email_list.iterrows():
+    recipient_email = row['email']
+    body = body_template.format(recipient=recipient_email)
+    send_email(recipient_email, subject, body)
+    
